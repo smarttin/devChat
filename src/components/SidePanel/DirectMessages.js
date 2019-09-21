@@ -6,18 +6,28 @@ import { setCurrentChannel, setPrivateChannel } from '../../actions';
 
 class DirectMessages extends Component {
   state = {
+    activeChannel: '',
     users: [],
     user: this.props.currentUser,
     usersRef: firebase.database().ref('users'),
     connectedRef: firebase.database().ref('.info/connected'),
     presenceRef: firebase.database().ref('presence'),
-    activeChannel: ''
   }
 
   componentDidMount() {
     if (this.state.user) {
       this.addListeners(this.state.user.uid);
     }
+  };
+
+  componentWillUnmount() {
+    this.removeListeners();
+  }
+
+  removeListeners = () => {
+    this.state.usersRef.off();
+    this.state.presenceRef.off();
+    this.state.connectedRef.off();
   };
 
   addStatusToUser = (userId, connected = true) => {

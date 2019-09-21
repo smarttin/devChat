@@ -1,12 +1,52 @@
 import React, { Component } from 'react'
 import { Menu, Icon } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import firebase from '../../firebase';
 import { setCurrentChannel, setPrivateChannel } from '../../actions';
 
 class Starred extends Component {
   state ={
     starredChannels: [],
-    activeChannel: ''
+    activeChannel: '',
+    user: this.props.currentUser,
+    usersRef: firebase.database().ref('users')
+  }
+
+  componentDidMount() {
+    if (this.state.user) {
+      this.addListeners(this.state.user.uid);
+    }
+  };
+
+  componentWillUnmount() {
+    this.removeListener();
+  }
+
+  removeListener = () => {
+    this.state.usersRef.child(`${this.state.user.uid}/starred`).off();
+  };
+
+  addListeners = userId => {
+    this.state.usersRef
+      .child(userId)
+      .child('starred')
+      .on('child_added', snap => {
+        const channelToAdd = { id: snap.key, ...snap.val() };
+        this.setState({
+          starredChannels: [...this.state.starredChannels, channelToAdd]
+        });
+      });
+
+    this.state.usersRef
+      .child(userId)
+      .child('starred')
+      .on('child_removed', snap => {
+        const channelToRemove = { id: snap.key, ...snap.val() };
+        const filterdChannels = this.state.starredChannels.filter(channel => {
+          return channel.id !== channelToRemove.id
+        })
+        this.setState({ starredChannels: filterdChannels });
+      })
   }
 
   setActiveChannel = channel => {
@@ -38,15 +78,15 @@ class Starred extends Component {
 
     return (
       <Menu.Menu className="menu">
-          <Menu.Item>
-            <span>
-              <Icon name="star" /> STARRED
-            </span>{" "}
-            ({starredChannels.length})
-          </Menu.Item>
-          {/* Channels */}
-          {this.displayChannels(starredChannels)}
-        </Menu.Menu>
+        <Menu.Item>
+          <span>
+            <Icon name="star" /> STARRED
+          </span>{" "}
+          ({starredChannels.length})
+        </Menu.Item>
+        {/* Channels */}
+        {this.displayChannels(starredChannels)}
+      </Menu.Menu>
     )
   }
 }

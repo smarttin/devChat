@@ -1,4 +1,4 @@
-import * as actionTypes from './types';
+import * as actionTypes from "./types";
 
 // User actions
 export const setUser = user => {
@@ -7,14 +7,14 @@ export const setUser = user => {
     payload: {
       currentUser: user
     }
-  }
-}
+  };
+};
 
 export const clearUser = () => {
   return {
     type: actionTypes.CLEAR_USER
-  }
-}
+  };
+};
 
 // channel actions
 export const setCurrentChannel = channel => {
@@ -23,8 +23,8 @@ export const setCurrentChannel = channel => {
     payload: {
       currentChannel: channel
     }
-  }
-}
+  };
+};
 
 export const setPrivateChannel = isPrivateChannel => {
   return {
@@ -32,5 +32,25 @@ export const setPrivateChannel = isPrivateChannel => {
     payload: {
       isPrivateChannel
     }
-  }
-}
+  };
+};
+
+export const setUserPosts = userPosts => {
+  return {
+    type: actionTypes.SET_USER_POSTS,
+    payload: {
+      userPosts
+    }
+  };
+};
+
+// Colors Actions
+export const setColors = (primaryColor, secondaryColor) => {
+  return {
+    type: actionTypes.SET_COLORS,
+    payload: {
+      primaryColor,
+      secondaryColor
+    }
+  };
+};

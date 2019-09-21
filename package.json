@@ -1,6 +1,7 @@
 {
-  "name": "react-slack-clone",
+  "name": "devChat",
   "version": "0.1.0",
+  "description": "cloning slack chat app",
   "private": true,
   "dependencies": {
     "emoji-mart": "^2.6.1",
